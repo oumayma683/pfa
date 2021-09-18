@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="utf-8"/>
+	<title>BANKER</title>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+	<link rel="stylesheet" type="text/css" href="/css/myStyle.css" th:href="@{/css/myStyle.css}"/>
+	<link rel="stylesheet" type="text/css" href="/css/home.css" th:href="@{/css/home.css}"/>
+
+</head>
+<body>
+<header><section id="header">
+    <div class="row">
+    <div class="header container">
+      <div class="nav-bar">
+        <div class="brand">
+          <img src="logo.png"/>
+        </div>
+        <div class="nav-list">
+          <div class="hamburger">
+            <div class="bar"></div>
+          </div>
+          <ul>
+            <li><a th:href="@{/home}">HOME</a></li>
+            <li><a th:href="@{/register}" sec:authorize="hasAuthority('admin')">Register</a></li>
+            <li><a th:href="@{/login?logout}">Log Out</a></li>
+            <li><a th:href="@{/users}" sec:authorize="hasAuthority('admin')">Users</a></li>
+            <!--li><a href="#login" data-after="Service">login</a></li-->
+            <!--li><a href="#projects" data-after="Projects">CreateAccount</a></li!-->
+            <!--li><a href="#about" data-after="About">About Us</a></li>
+            <li><a href="#contact" data-after="Contact">Contact</a></li-->
+          </ul>
+        </div>
+      </div>
+      <!--ul class="login">
+        <li ><a href="">Log in </a></li>
+        <li ><a href="this.html">Sign up</a></li> 
+    </ul-->
+    </div></div>
+  </section></header>
+  
+
+<section layout:fragment="content">
+	
+
+<div layout:fragment="content">
+	<div class="col-md-6">
+	  <div class="panel panel-primary">	
+	  	<div class="panel-heading">Account View</div>
+	  	<div class="panel-body">
+           <form th:action="@{/consulterCompte}" method="get">
+           	<div>
+           		<label>Account Code:</label>
+           		<input type="text" name="codeCompte" th:value="${codeCompte}" >
+           		<button type="submit" class="btn btn-primary">OK</button>
+           	</div>
+           </form>
+           <div class="text-danger" th:if="${execption}" th:text="${execption.message}"></div>
+	    </div>
+	   </div>
+
+	   <div class="panel panel-primary" th:if="${compte}">	
+	  	<div class="panel-heading">Client Profile</div>
+	  	<div class="panel-body">
+	  	 <!--p>
+               <label>Client:</label> <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+                
+            </p-->
+	  		<!--div>
+	  			<label>Client:</label>
+	  			<label th:text="${compte.client.username}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Email:</label>
+	  			<label th:text="${compte.client.email}"></label>
+	  		</div>
+	  		<div>
+	  			<label>CIN:</label>
+	  			<label th:text="${compte.client.cin}"></label>
+	  		</div-->
+	  		<div>
+	  			<label>Code:</label>
+	  			<label th:text="${compte.codeCompte}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Balance:</label>
+	  			<label th:text="${compte.solde}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Creation Date :</label>
+	  			<label th:text="${compte.dateCreation}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Type :</label>
+	  			<label th:text="${compte.type}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Discoverd :</label>
+	  			<label th:text="${compte.decouvert}"></label>
+	  		</div>
+	  		<div>
+	  			<label>Rate :</label>
+	  			<label th:text="${compte.taux}"></label>
+	  		</div>
+	  		<!--div>
+	  			<label>Type:</label>
+	  			<label th:text="${compte.class.simpleName}"></label>
+	  		</div>
+	  		<div th:if="${compte.class.simpleName=='CompteCourant'}">
+	  			<label>Decouvert:</label>
+	  			<label th:text="${compte.decouvert}"></label>
+	  		</div>
+	  		<div th:if="${compte.class.simpleName=='CompteEpargne'}">
+	  			<label>Taux:</label>
+	  			<label th:text="${compte.taux}"></label>
+	  		</div-->
+	    </div>
+	</div>
+</div>
+    <div class="col-md-6" >
+	  <div class="panel panel-primary" th:if="${compte}" sec:authorize="hasAuthority('admin')">	
+	  	<div class="panel-heading">Operation</div>
+	  	<div class="panel-body">
+         <form th:action="@{/saveOperation}" method="post">
+          <div>
+            <label>Compte</label>
+            <input type="hidden" name="codeCompte" th:value="${codeCompte}"/>
+            <label th:text="${codeCompte}"></label>
+          </div>
+          <div>
+            <input type="radio" name="typeOperation"value="VERS" checked="checked" onchange="document.getElementById('forTransfer').style.display='none'"/>
+            <label>Payment</label>
+            <input type="radio" name="typeOperation"value="RET" onchange="document.getElementById('forTransfer').style.display='none'"/>
+            <label>Withdrawal</label>
+            <input type="radio" name="typeOperation"value="VIR" onchange="document.getElementById('forTransfer').style.display='block'"/>
+            <label>Transfer</label>
+          </div>
+           <div id="forTransfer" style="display:none ;">
+
+            <label>To:</label>
+            <input type="text" name="codeCompte2"/>
+          </div>
+          <div>
+            <label>Ammount:</label>
+            <input type="text" name="montant"/>
+          </div>
+          <div class="text-danger" th:text="${#httpServletRequest.getParameter('ERROR')}"></div>
+          <button type="submit" class="btn btn-primary">Save</button>
+         </form>
+	    </div>
+	   </div>
+
+	   <div class="panel panel-primary" th:if="${compte}">	
+	  	<div class="panel-heading">Operation's List</div>
+	  	<div class="panel-body">
+	  		<table class="table table-striped">
+	  			<tr>
+	  				<th>Num</th><th>Type</th><th>Date</th><th>Ammount</th>
+	  				
+	  			</tr>
+	  			<tr th:each="o:${listOperations}">
+	  				<td th:text="${o.numero}"></td>
+	  				<td th:text="${o.class.simpleName}"></td>
+	  				<td th:text="${o.dateOperation}"></td>
+	  				<td th:text="${o.montant}"></td>
+	  			</tr>
+	  		</table>
+	  	    <div>
+	  	      <ul class="nav nav-pills">
+	  	        <li th:each="p,status:${pages}">
+	  	          <a th:href="@{/consulterCompte(codeCompte=${codeCompte},page=${status.index})}" th:text="${status.index}"></a>
+	  	        </li>
+	  	      </ul>
+	  	    </div>
+	    </div>
+	   </div>
+</div>
+<div></section>
+<footer>
+	<!-- Footer -->
+  <!--section id="footer"></br>
+  
+  	<div class="navbar-fixed-bottom">
+    <div class="footer container">
+      <div class="brand">
+        <h1><span>B</span>A<span>N</span>KER</h1>
+      </div>
+      <h2>Your Bank Online</h2>
+      <div class="social-icon">
+        <div class="social-item">
+          <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/facebook-new.png" /></a>
+        </div>
+        <div class="social-item">
+          <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/instagram-new.png" /></a>
+        </div>
+        <div class="social-item">
+          <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/twitter.png" /></a>
+        </div>
+        <div class="social-item">
+          <a href="#"><img src="https://img.icons8.com/bubbles/100/000000/behance.png" /></a>
+        </div>
+      </div>
+      <p>Copyright © 2021  All rights reserved</p>
+    </div></div>
+
+  </section-->
+ 
+  
+  </footer>
+
+
+</body>
+</html>

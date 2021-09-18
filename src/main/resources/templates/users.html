@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>List Users</title>
+   <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+	<link rel="stylesheet" type="text/css" href="/css/Style.css" th:href="@{/css/Style.css}"/>
+	<link rel="stylesheet" type="text/css" href="/css/home.css" th:href="@{/css/home.css}"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<header><section id="header">
+    <div class="row">
+    <div class="header container">
+      <div class="nav-bar">
+        <div class="brand">
+          <img src="/css/logo.png"/>
+        </div>
+        <div class="nav-list">
+          <div class="hamburger">
+            <div class="bar"></div>
+          </div>
+          <ul>
+            <li><a th:href="@{/home}">HOME</a></li>
+            <li><a th:href="@{/register}" sec:authorize="hasAuthority('admin')">Register</a></li>
+            <li><a th:href="@{/}"sec:authorize="hasAuthority('admin')">See Account</a></li>
+            <li><a th:href="@{/login?logout}">Log Out</a></li>
+            <!--li><a href="#login" data-after="Service">login</a></li-->
+            <!--li><a href="#projects" data-after="Projects">CreateAccount</a></li!-->
+            <!--li><a href="#about" data-after="About">About Us</a></li>
+            <li><a href="#contact" data-after="Contact">Contact</a></li-->
+          </ul>
+        </div>
+      </div>
+      <!--ul class="login">
+        <li ><a href="">Log in </a></li>
+        <li ><a href="this.html">Sign up</a></li> 
+    </ul-->
+    </div></div>
+  </section></header>
+
+  
+ <section layout:fragment="content">
+<div layout:fragment="content">
+	<div class="col-md-12">
+	  <div class="panel panel-primary">	
+	  	
+	  	<br>
+	  	<br>
+	  <div class="panel-body">
+	  <br>
+            <p>
+                <h4>WELCOME</h4> <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+                <span sec:authentication="principal.authorities">Roles</span>
+            </p>
+            
+        
+   
+    <div>
+        <h1>List of Users</h1>
+    </div>
+     
+    <div>
+      <table class="table table-bordered">
+    <thead class="thead-dark">
+                <tr>
+                    <th>User ID</th>
+                    <th>E-mail</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>userName</th>
+                    <th>Adress</th>
+                    <th>City</th>
+                    <th>ZIP</th>
+                    <th>CIN</th>
+                    <th>teL</th>
+                    <th>Role</th>
+                    <th></th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user: ${listUsers}">
+                    <td th:text="${user.id}">User ID</td>
+                    <td th:text="${user.email}">E-mail</td>
+                    <td th:text="${user.firstName}">First Name</td>
+                    <td th:text="${user.lastName}">Last Name</td>
+                    <td th:text="${user.username}">userName</td>
+                    <td th:text="${user.adress}">adress</td>
+                    <td th:text="${user.city}">city</td>
+                    <td th:text="${user.zip}">zip</td>
+                    <td th:text="${user.cin}">cin</td>
+                    <td th:text="${user.phone}">tel</td>
+                    <td th:text="${user.roles }">Role</td>
+                    <td>
+                    <a th:href="@{'/users/edit/' + ${user.id}}">Edit</a><br>
+                     <a th:href="@{'/users/delete/' + ${user.id}}">Delete</a>
+                    
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div></div></div></div></section>
+</body>
+</html>
